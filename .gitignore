@@ -10,7 +10,6 @@
 .idea/gradle.xml
 .idea/misc.xml
 .idea/runConfigurations.xml
-app/
 build.gradle
 gradle.properties
 gradle/
