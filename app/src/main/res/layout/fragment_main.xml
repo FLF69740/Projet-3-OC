@@ -2,10 +2,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_page_LinearLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     tools:context="com.example.francoislf.moodtracker.Controllers.MainFragment"
-    android:gravity="center">
+    android:orientation="horizontal">
 
     <!-- TODO: Update blank fragment layout
     <ImageView
@@ -15,9 +15,41 @@
 
         />-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_page_title"/>
+
+        <ImageView
+            android:id="@+id/note_button"
+            android:layout_width="@dimen/size_ic_note_width"
+            android:layout_height="@dimen/size_ic_note_width"
+            android:src="@drawable/ic_note_add_black"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="5"
+            />
+
+        <ImageView
+            android:id="@+id/dynamic-smyley"
+            android:layout_width="@dimen/size_smiley_width"
+            android:layout_height="@dimen/size_smiley_height"
+            android:src="@drawable/smiley_happy"
+            android:layout_gravity="center"
+            android:layout_weight="40"
+            />
+
+        <ImageView
+            android:id="@+id/history_button"
+            android:layout_width="@dimen/size_ic_history_width"
+            android:layout_height="@dimen/size_ic_history_height"
+            android:src="@drawable/ic_history_black"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="5"
+            />
+
 
 </LinearLayout>
+
+

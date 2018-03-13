@@ -1,0 +1,12 @@
+<resources>
+
+    <dimen name="size_smiley_width">268dp</dimen>
+    <dimen name="size_smiley_height">@dimen/size_smiley_width</dimen>
+
+    <dimen name="size_ic_note_width">39dp</dimen>
+    <dimen name="size_ic_note_height">49dp</dimen>
+    
+    <dimen name="size_ic_history_width">50dp</dimen>
+    <dimen name="size_ic_history_height">44dp</dimen>
+
+</resources>

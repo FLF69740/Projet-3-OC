@@ -49,13 +49,11 @@ public class MainFragment extends Fragment {
 
         // Widget configuration
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.fragment_page_LinearLayout);
-        TextView textView = (TextView) view.findViewById(R.id.fragment_page_title);
 
         int position = getArguments().getInt(KEY_POSITION, -1);
         int color = getArguments().getInt(KEY_COLOR, -1);
 
         linearLayout.setBackgroundColor(color);
-        textView.setText("Page number " + position);
 
         return view;
     }
