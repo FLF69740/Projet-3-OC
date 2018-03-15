@@ -1,6 +1,7 @@
 package com.example.francoislf.moodtracker.Controllers;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,12 +17,15 @@ import com.example.francoislf.moodtracker.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements View.OnClickListener {
 
 
     // Keys for Bundle
     public static final String KEY_IMAGE = "Image";
     public static final String KEY_COLOR = "Color";
+
+    // callback
+    private OnButtonClickedListener mCallBack;
 
     public MainFragment() {
         // Required empty public constructor
@@ -48,6 +52,11 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        // Set onClikedListener for ImageViews
+
+        view.findViewById(R.id.note_button).setOnClickListener(this);
+        view.findViewById(R.id.history_button).setOnClickListener(this);
+
         // Widget configuration
 
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.fragment_page_LinearLayout);
@@ -71,4 +80,32 @@ public class MainFragment extends Fragment {
         return view;
     }
 
+    // spread the click to MainActivity
+    @Override
+    public void onClick(View v) {
+        mCallBack.onButtonClicked(v);
+    }
+
+    // Declare interface that will be implemented by any container activity
+    public interface OnButtonClickedListener {
+        void onButtonClicked(View view);
+    }
+
+
+    // callback to parent activity
+    private void createCallbackToParentActivity(){
+        try {
+            //Parent activity will automatically subscribe to callback
+            mCallBack = (OnButtonClickedListener) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException(e.toString()+ " must implement OnButtonClickedListener");
+        }
+    }
+
+    // Call the method that creating callback after being attached to parent activity
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.createCallbackToParentActivity();
+    }
 }

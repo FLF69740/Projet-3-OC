@@ -26,6 +26,7 @@
             android:layout_marginBottom="20dp"
             android:layout_marginRight="10dp"
             android:layout_weight="5"
+            android:tag="10"
             />
 
         <ImageView
@@ -47,6 +48,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
             android:layout_weight="5"
+            android:tag="20"
             />
 
 
