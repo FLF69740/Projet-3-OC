@@ -1,5 +1,6 @@
 <resources>
 
+    <!-- Size configurations for Tablet -->
     <dimen name="size_smiley_width">500dp</dimen>
     <dimen name="size_smiley_height">@dimen/size_smiley_width</dimen>
 

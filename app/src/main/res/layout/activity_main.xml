@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <android.support.v4.view.ViewPager
+    <com.example.francoislf.moodtracker.Views.VerticalViewPager
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_main_viewpager"
     android:layout_width="match_parent"
