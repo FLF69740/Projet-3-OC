@@ -3,6 +3,7 @@ package com.example.francoislf.moodtracker.Views;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -53,7 +54,21 @@ public class VerticalViewPager extends ViewPager{
 
     }
 
-    
+    // Implement method to handle touch screen motion events.
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return super.onTouchEvent(changeXtoY(ev));
+    }
+
+    public MotionEvent changeXtoY(MotionEvent event){
+
+        Log.i("Location (XY) before : ", String.valueOf(event.getX()) + " ; " + String.valueOf(event.getY()));
+        event.setLocation(event.getY(),event.getX());
+        Log.i("Location (YX) After  : ", String.valueOf(event.getX()) + " ; " + String.valueOf(event.getY()));
+
+        return event;
+    }
 
 
 }
