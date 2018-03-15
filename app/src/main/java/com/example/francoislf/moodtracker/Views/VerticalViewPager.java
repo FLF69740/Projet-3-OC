@@ -63,9 +63,9 @@ public class VerticalViewPager extends ViewPager{
 
     public MotionEvent changeXtoY(MotionEvent event){
 
-        Log.i("Location (XY) before : ", String.valueOf(event.getX()) + " ; " + String.valueOf(event.getY()));
+      //  Log.i("Location (XY) before : ", String.valueOf(event.getX()) + " ; " + String.valueOf(event.getY()));
         event.setLocation(event.getY(),event.getX());
-        Log.i("Location (YX) After  : ", String.valueOf(event.getX()) + " ; " + String.valueOf(event.getY()));
+      //  Log.i("Location (YX) After  : ", String.valueOf(event.getX()) + " ; " + String.valueOf(event.getY()));
 
         return event;
     }

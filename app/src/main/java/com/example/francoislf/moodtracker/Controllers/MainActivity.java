@@ -8,6 +8,7 @@ import com.example.francoislf.moodtracker.R;
 
 public class MainActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private void configureViewPager(){
         ViewPager viewPager = (ViewPager) findViewById(R.id.activity_main_viewpager);
 
-        viewPager.setAdapter(new PageAdapter(getSupportFragmentManager(), getResources().getIntArray(R.array.colorPagesViewPager)));
+
+        viewPager.setAdapter(new PageAdapter(getSupportFragmentManager(), getResources().getIntArray(R.array.ColorPageFragment)));
     }
 
 }

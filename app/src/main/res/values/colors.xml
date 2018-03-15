@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#ff00796b</color>
 
-    <array name="colorPagesViewPager">
+    <array name="ColorPageFragment">
         <item>#ffde3c50</item>
         <item>#ff9b9b9b</item>
         <item>#a5468ad9</item>
