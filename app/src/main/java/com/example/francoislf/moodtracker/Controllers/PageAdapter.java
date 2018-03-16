@@ -28,4 +28,5 @@ public class PageAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return this.color.length;
     }
+
 }

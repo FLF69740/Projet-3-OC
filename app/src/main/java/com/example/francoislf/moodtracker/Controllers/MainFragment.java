@@ -2,9 +2,11 @@ package com.example.francoislf.moodtracker.Controllers;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +23,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
 
     // Keys for Bundle
-    public static final String KEY_IMAGE = "Image";
+    public static final String KEY_POSITION = "Position";
     public static final String KEY_COLOR = "Color";
+
+    private int mPosition;
 
     // callback
     private OnButtonClickedListener mCallBack;
@@ -38,7 +42,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
         // Create Bundle and add data
         Bundle arg = new Bundle();
-        arg.putInt(KEY_IMAGE, position);
+        arg.putInt(KEY_POSITION, position);
         arg.putInt(KEY_COLOR, color);
         fragment.setArguments(arg);
 
@@ -62,13 +66,13 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.fragment_page_LinearLayout);
         ImageView imageView = (ImageView) view.findViewById(R.id.dynamic_smyley);
 
-        int position = getArguments().getInt(KEY_IMAGE, 3);
+        mPosition = getArguments().getInt(KEY_POSITION, 3);
         int color = getArguments().getInt(KEY_COLOR, 3);
 
         linearLayout.setBackgroundColor(color);
 
         // ImageView configuration
-        switch (position){
+        switch (mPosition){
             case 0 : imageView.setImageResource(R.drawable.smiley_sad); break;
             case 1 : imageView.setImageResource(R.drawable.smiley_disappointed); break;
             case 2 : imageView.setImageResource(R.drawable.smiley_normal); break;
@@ -83,12 +87,19 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     // spread the click to MainActivity
     @Override
     public void onClick(View v) {
+
+        // communicate the position to MainActivity
+        mCallBack.definePosition(mPosition);
+        // communicate the listener to MainActivity
         mCallBack.onButtonClicked(v);
+
     }
+
 
     // Declare interface that will be implemented by any container activity
     public interface OnButtonClickedListener {
         void onButtonClicked(View view);
+        void definePosition(int position);
     }
 
 
