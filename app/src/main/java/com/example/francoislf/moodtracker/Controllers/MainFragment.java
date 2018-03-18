@@ -88,8 +88,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        // communicate the position to MainActivity
-        mCallBack.definePosition(mPosition);
         // communicate the listener to MainActivity
         mCallBack.onButtonClicked(v);
 
@@ -99,7 +97,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     // Declare interface that will be implemented by any container activity
     public interface OnButtonClickedListener {
         void onButtonClicked(View view);
-        void definePosition(int position);
     }
 
 
