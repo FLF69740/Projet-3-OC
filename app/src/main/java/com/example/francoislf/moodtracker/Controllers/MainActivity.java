@@ -1,6 +1,7 @@
 package com.example.francoislf.moodtracker.Controllers;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
         switch (view.getTag().toString()){
 
             case "10" : mDialogOpen = true; createDialog(); break;
-            case "20" : Log.i("Button 20 ", " NEW ACTIVITY "  ); break;
+            case "20" : startActivity(new Intent(this,HistoryActivity.class)); break;
             default: break;
         }
 
