@@ -2,14 +2,44 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="History Activity"/>
+    <include
+        layout="@layout/stick_day_7"
+        android:id="@+id/stick_day_7">
+    </include>
 
+    <include
+        layout="@layout/stick_day_6"
+        android:id="@+id/stick_day_6">
+    </include>
+
+    <include
+        layout="@layout/stick_day_5"
+        android:id="@+id/stick_day_5">
+    </include>
+
+    <include
+        layout="@layout/stick_day_4"
+        android:id="@+id/stick_day_4">
+    </include>
+
+    <include
+        layout="@layout/stick_day_3"
+        android:id="@+id/stick_day_3">
+    </include>
+
+    <include
+        layout="@layout/stick_day_2"
+        android:id="@+id/stick_day_2">
+    </include>
+
+    <include
+        layout="@layout/stick_day_1"
+        android:id="@+id/stick_day_1">
+    </include>
 
 
 </LinearLayout>
