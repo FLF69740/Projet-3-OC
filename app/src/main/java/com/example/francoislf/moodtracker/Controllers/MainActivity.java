@@ -11,16 +11,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.francoislf.moodtracker.Models.Clock;
 import com.example.francoislf.moodtracker.R;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnButtonClickedListener{
 
 
 
-    SharedPreferences mPreferences;
+    SharedPreferences mPreferences, mDayPreferences, mYearPreferences;
 
     int mPosition;
     boolean mDialogOpen;
+
+    Clock mClock;
 
     public static final String LAST_POSITION = "LAST_POSITION";
     public static final String COMMENTARY_OF_THE_DAY = "COMMENTARY_OF_THE_DAY";
@@ -28,12 +31,26 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
     public static final String BUNDLE_STATE_OUTSTATE = "Outstate";
     public static final String BUNDLE_STATE_DIALOG = "Dialog";
 
+    public static final String LAST_SAVE_OF_YEAR = "yearLastSave";
+    public static final String LAST_SAVE_OF_DAY = "dayLastSave";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mPreferences = getPreferences(MODE_PRIVATE);
+        mDayPreferences = getPreferences(MODE_PRIVATE);
+        mYearPreferences = getPreferences(MODE_PRIVATE);
+
+
+        mClock = new Clock(getPreferences(MODE_PRIVATE).getInt(LAST_SAVE_OF_YEAR,0), getPreferences(MODE_PRIVATE).getInt(LAST_SAVE_OF_DAY,0));
+
+        if (!mClock.dateDontChange()) mPreferences.edit().putString(COMMENTARY_OF_THE_DAY, null).apply();
+        else {
+            mDayPreferences.edit().putInt(LAST_SAVE_OF_DAY, mClock.getSaveDay()).apply();
+            mYearPreferences.edit().putInt(LAST_SAVE_OF_YEAR, mClock.getSaveYear()).apply();
+        }
 
         mDialogOpen = false;
 
@@ -47,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
 
     }
 
+    // Configure ViewPager
     private void configureViewPager(){
         ViewPager viewPager = (ViewPager) findViewById(R.id.activity_main_viewpager);
         viewPager.setAdapter(new PageAdapter(getSupportFragmentManager(), getResources().getIntArray(R.array.ColorPageFragment)));
@@ -104,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
 
     }
 
+    // AlertDialog construction
     public void createDialog(){
 
         String messageSaved = getPreferences(MODE_PRIVATE).getString(COMMENTARY_OF_THE_DAY, null);
