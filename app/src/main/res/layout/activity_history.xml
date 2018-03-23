@@ -6,6 +6,13 @@
     android:orientation="vertical">
 
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/MonRecyclerView"/>
+
+
+<!--
     <include
         layout="@layout/stick_day_7"
         android:id="@+id/stick_day_7">
@@ -40,6 +47,6 @@
         layout="@layout/stick_day_1"
         android:id="@+id/stick_day_1">
     </include>
-
+-->
 
 </LinearLayout>
