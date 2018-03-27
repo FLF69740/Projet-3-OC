@@ -6,12 +6,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+
 import com.example.francoislf.moodtracker.Models.Stick;
 import com.example.francoislf.moodtracker.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import static com.example.francoislf.moodtracker.Controllers.MainActivity.LAST_POSITION;
+import static com.example.francoislf.moodtracker.Controllers.MainActivity.PERIOD_TO_UPLOAD;
+import static com.example.francoislf.moodtracker.Controllers.MainActivity.COMMENTARY_OF_THE_DAY;
+
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -23,11 +29,24 @@ public class HistoryActivity extends AppCompatActivity {
     SharedPreferences mDefaultPreferencesStick;
     public static final String SHARED_DEFAULT_STICK_SCALE = "SHARED_DEFAULT_STICK_SCALE";
 
+    int mPosition;
+    int mDay;
+    String mCommentary;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+
+
+        mPosition = (int) getIntent().getSerializableExtra(LAST_POSITION);
+        mDay = (int) getIntent().getSerializableExtra(PERIOD_TO_UPLOAD);
+        mCommentary = (String) getIntent().getSerializableExtra(COMMENTARY_OF_THE_DAY);
+
+        Log.i("TRANSFERT : ", "MOOD : " + mPosition + " - Nb Day : " + mDay + " - Commentaire : " + mCommentary);
+
+
 
         load();
 

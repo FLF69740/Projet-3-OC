@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
 
     public static final String LAST_SAVE_OF_YEAR = "yearLastSave";
     public static final String LAST_SAVE_OF_DAY = "dayLastSave";
+    public static final String PERIOD_TO_UPLOAD = "Period to Upload";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +45,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
         mYearPreferences = getPreferences(MODE_PRIVATE);
 
 
-        mClock = new Clock(getPreferences(MODE_PRIVATE).getInt(LAST_SAVE_OF_YEAR,0), getPreferences(MODE_PRIVATE).getInt(LAST_SAVE_OF_DAY,0));
+        clockInit();
 
-        if (!mClock.dateDontChange()) mPreferences.edit().putString(COMMENTARY_OF_THE_DAY, null).apply();
-        else {
-            mDayPreferences.edit().putInt(LAST_SAVE_OF_DAY, mClock.getSaveDay()).apply();
-            mYearPreferences.edit().putInt(LAST_SAVE_OF_YEAR, mClock.getSaveYear()).apply();
-        }
 
         mDialogOpen = false;
 
@@ -115,8 +111,22 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
 
         switch (view.getTag().toString()){
 
-            case "10" : mDialogOpen = true; createDialog(); break;
-            case "20" : startActivity(new Intent(this,HistoryActivity.class)); break;
+            case "10" :
+                mDialogOpen = true;
+                createDialog();
+                break;
+
+            case "20" :
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+                intent.putExtra(PERIOD_TO_UPLOAD, mClock.getPeriod());
+                intent.putExtra(LAST_POSITION, mPosition);
+                intent.putExtra(COMMENTARY_OF_THE_DAY, getPreferences(MODE_PRIVATE).getString(COMMENTARY_OF_THE_DAY, null));
+                mYearPreferences.edit().putInt(LAST_SAVE_OF_YEAR, mClock.getThisYear()).apply();
+                mDayPreferences.edit().putInt(LAST_SAVE_OF_DAY, mClock.getThisDay()).apply();
+                clockInit();
+                startActivity(intent);
+                break;
+
             default: break;
         }
 
@@ -153,6 +163,14 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
 
 
 
+    }
+
+    private void clockInit(){
+        mClock = new Clock(getPreferences(MODE_PRIVATE).getInt(LAST_SAVE_OF_YEAR, 0), getPreferences(MODE_PRIVATE).getInt(LAST_SAVE_OF_DAY, 0));
+
+        if (mClock.dateChange()) {
+            mPreferences.edit().putString(COMMENTARY_OF_THE_DAY, null).apply();
+        }
     }
 
 

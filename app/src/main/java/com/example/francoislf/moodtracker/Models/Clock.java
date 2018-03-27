@@ -1,5 +1,7 @@
 package com.example.francoislf.moodtracker.Models;
 
+import android.util.Log;
+
 import org.joda.time.DateTime;
 
 import java.util.Calendar;
@@ -16,38 +18,39 @@ public class Clock {
 
     public Clock(int yearLastSave, int dayLastSave){
         this.mToday = new DateTime();
-        //mToday = mToday.plusDays(1);
-        if (yearLastSave == 0) mLastPoint = new DateTime();
-        else {
+        this.mLastPoint = new DateTime();
+
+        // If SharedPreferences from MainActivity exist and don't have default date values or this ones of today
+        if (yearLastSave != 0){
             mLastPoint = mLastPoint.year().setCopy(yearLastSave);
             mLastPoint = mLastPoint.dayOfYear().setCopy(dayLastSave);
         }
-    }
-
-/*
-    public int test(){
-
-        int dif = 0;
-
-        DateTime dateTime = new DateTime();
-
-        dif= dateTime.getDayOfYear();
-
-        DateTime date1 = new DateTime();
-        DateTime date2 = new DateTime();
-
-        date1 = date1.dayOfMonth().setCopy(24);
-        date1 = date1.monthOfYear().setCopy(3);
-
-
-        dif = date1.getDayOfYear() - date2.getDayOfYear();
-
-       // dif = date1.getYear();
-
-        return dif;
 
     }
-*/
+
+    public int getPeriod(){
+        int result;
+
+        if (mLastPoint.getYear() != mToday.getYear()){
+            DateTime lastDayOfThisYear = new DateTime();
+            lastDayOfThisYear = lastDayOfThisYear.year().setCopy(mLastPoint.getYear());
+            lastDayOfThisYear = lastDayOfThisYear.dayOfMonth().setCopy(31);
+            lastDayOfThisYear = lastDayOfThisYear.monthOfYear().setCopy(12);
+
+            result = lastDayOfThisYear.getDayOfYear() - mLastPoint.getDayOfYear();
+            result += mToday.getDayOfYear();
+        }
+
+        else {
+            result = mToday.getDayOfYear() - mLastPoint.getDayOfYear();
+        }
+
+        return result;
+    }
+
+    public int getThisYear() {return mToday.getYear();}
+
+    public int getThisDay(){return mToday.getDayOfYear();}
 
     public int getSaveYear(){
         return mLastPoint.getYear();
@@ -58,11 +61,11 @@ public class Clock {
     }
 
 
-    public Boolean dateDontChange(){
-        boolean result = true;
+    public Boolean dateChange(){
+        boolean result = false;
 
         if (mToday.getYear() != mLastPoint.getYear() || mToday.getDayOfYear() != mLastPoint.getDayOfYear())
-            result = false;
+            result = true;
 
         return result;
     }
