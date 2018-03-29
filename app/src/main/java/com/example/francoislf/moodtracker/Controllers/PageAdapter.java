@@ -3,7 +3,6 @@ package com.example.francoislf.moodtracker.Controllers;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.widget.ImageView;
 
 /**
  * Created by slaye on 12/03/2018.

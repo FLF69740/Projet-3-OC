@@ -10,30 +10,32 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-
 import com.example.francoislf.moodtracker.Models.Clock;
+import com.example.francoislf.moodtracker.Models.Stick;
+import com.example.francoislf.moodtracker.Models.StickDiagram;
 import com.example.francoislf.moodtracker.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnButtonClickedListener{
 
-
-
-    SharedPreferences mPreferences, mDayPreferences, mYearPreferences;
+    SharedPreferences mPreferences, mDialogPreferences, mLastPosPreferences, mJSonPreferences;
 
     int mPosition;
     boolean mDialogOpen;
 
     Clock mClock;
+    StickDiagram mStickDiagram;
 
     public static final String LAST_POSITION = "LAST_POSITION";
     public static final String COMMENTARY_OF_THE_DAY = "COMMENTARY_OF_THE_DAY";
-
     public static final String BUNDLE_STATE_OUTSTATE = "Outstate";
     public static final String BUNDLE_STATE_DIALOG = "Dialog";
-
     public static final String LAST_SAVE_OF_YEAR = "yearLastSave";
     public static final String LAST_SAVE_OF_DAY = "dayLastSave";
-    public static final String PERIOD_TO_UPLOAD = "Period to Upload";
+    public static final String SHARED_DEFAULT_STICK_SCALE = "SHARED_DEFAULT_STICK_SCALE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,13 +43,9 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
         setContentView(R.layout.activity_main);
 
         mPreferences = getPreferences(MODE_PRIVATE);
-        mDayPreferences = getPreferences(MODE_PRIVATE);
-        mYearPreferences = getPreferences(MODE_PRIVATE);
-
-
-        clockInit();
-
-
+        mDialogPreferences = getPreferences(MODE_PRIVATE);
+        mLastPosPreferences = getPreferences(MODE_PRIVATE);
+        mJSonPreferences = getPreferences(MODE_PRIVATE);
         mDialogOpen = false;
 
         if (savedInstanceState != null) {
@@ -55,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
             mDialogOpen = savedInstanceState.getBoolean(BUNDLE_STATE_DIALOG);
             if (mDialogOpen) createDialog();
         }
+
+        clockInit(getPreferences(MODE_PRIVATE).getInt(LAST_POSITION,3));
 
         this.configureViewPager();
 
@@ -78,11 +78,11 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
             // This method will be invoked when the current page is scrolled
             @Override
             public void onPageSelected(int position) {
-                mPreferences.edit().putInt(LAST_POSITION, position).apply();
+                mLastPosPreferences.edit().putInt(LAST_POSITION, position).apply();
 
                 // Delete a commentary before if mood change
                 if (getPreferences(MODE_PRIVATE).getString(COMMENTARY_OF_THE_DAY, null) != null && mPosition != position)
-                    mPreferences.edit().putString(COMMENTARY_OF_THE_DAY, null).apply();
+                    mDialogPreferences.edit().putString(COMMENTARY_OF_THE_DAY, null).apply();
 
             }
 
@@ -97,48 +97,35 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-
         outState.putInt(BUNDLE_STATE_OUTSTATE, mPosition);
         outState.putBoolean(BUNDLE_STATE_DIALOG, mDialogOpen);
-
         super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onButtonClicked(View view) {
-
         mPosition = getPreferences(MODE_PRIVATE).getInt(LAST_POSITION,3);
 
         switch (view.getTag().toString()){
-
             case "10" :
                 mDialogOpen = true;
                 createDialog();
                 break;
-
             case "20" :
                 Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-                intent.putExtra(PERIOD_TO_UPLOAD, mClock.getPeriod());
-                intent.putExtra(LAST_POSITION, mPosition);
-                intent.putExtra(COMMENTARY_OF_THE_DAY, getPreferences(MODE_PRIVATE).getString(COMMENTARY_OF_THE_DAY, null));
-                mYearPreferences.edit().putInt(LAST_SAVE_OF_YEAR, mClock.getThisYear()).apply();
-                mDayPreferences.edit().putInt(LAST_SAVE_OF_DAY, mClock.getThisDay()).apply();
-                clockInit();
+                mPreferences.edit().putInt(LAST_SAVE_OF_YEAR, mClock.getThisYear()).apply();
+                mPreferences.edit().putInt(LAST_SAVE_OF_DAY, mClock.getThisDay()).apply();
                 startActivity(intent);
                 break;
-
             default: break;
         }
-
     }
 
     // AlertDialog construction
     public void createDialog(){
 
         String messageSaved = getPreferences(MODE_PRIVATE).getString(COMMENTARY_OF_THE_DAY, null);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
         builder.setMessage("Commentaire");
 
         final EditText input = new EditText(this);
@@ -155,24 +142,57 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mDialogOpen = false;
-                        mPreferences.edit().putString(COMMENTARY_OF_THE_DAY, input.getText().toString()).apply();
+                        mDialogPreferences.edit().putString(COMMENTARY_OF_THE_DAY, input.getText().toString()).apply();
                     }
                 })
                 .create()
                 .show();
-
-
-
     }
 
-    private void clockInit(){
+    // Initialisation of Sticks state with the current clock
+    private void clockInit(int mood){
         mClock = new Clock(getPreferences(MODE_PRIVATE).getInt(LAST_SAVE_OF_YEAR, 0), getPreferences(MODE_PRIVATE).getInt(LAST_SAVE_OF_DAY, 0));
 
+        mStickDiagram = new StickDiagram(mClock.getPeriod(), mood, getPreferences(MODE_PRIVATE).getString(COMMENTARY_OF_THE_DAY, null));
+
+        load();
+
         if (mClock.dateChange()) {
-            mPreferences.edit().putString(COMMENTARY_OF_THE_DAY, null).apply();
+            mStickDiagram.upLoad();
+
+            mDialogPreferences.edit().putString(COMMENTARY_OF_THE_DAY, null).apply();
         }
+        save();
     }
 
+    // Load JSon in order to create class object with Gson library
+    private void load(){
 
+        mJSonPreferences = getSharedPreferences(SHARED_DEFAULT_STICK_SCALE, MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mJSonPreferences.getString(SHARED_DEFAULT_STICK_SCALE, null);
+        Type type = new TypeToken<ArrayList<Stick>>() {}.getType();
+        ArrayList<Stick> listStick = gson.fromJson(json, type);
+        mStickDiagram.setListStick(listStick);
 
+        if (mStickDiagram.getListStick() == null) {
+            mStickDiagram.resetFactory();
+        }
+
+        Log.i("TRANSFERT", "LOAD MODE to " + getClass().getName().toString());
+    }
+
+    // Save current class object to SharedPreferences with Gson library (JSon format)
+    private void save(){
+
+        mJSonPreferences = getSharedPreferences(SHARED_DEFAULT_STICK_SCALE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = mJSonPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(mStickDiagram.getListStick());
+        editor.putString(SHARED_DEFAULT_STICK_SCALE, json);
+      //      editor.putString(SHARED_DEFAULT_STICK_SCALE, null);
+        editor.apply();
+
+        Log.i("TRANSFERT","SAVE MODE to " + getClass().getName().toString());
+    }
 }

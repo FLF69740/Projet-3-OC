@@ -1,10 +1,7 @@
 package com.example.francoislf.moodtracker.Models;
 
 import android.util.Log;
-
 import org.joda.time.DateTime;
-
-import java.util.Calendar;
 
 /**
  * Created by slaye on 23/03/2018.
@@ -20,11 +17,14 @@ public class Clock {
         this.mToday = new DateTime();
         this.mLastPoint = new DateTime();
 
-        // If SharedPreferences from MainActivity exist and don't have default date values or this ones of today
-        if (yearLastSave != 0){
+        if (yearLastSave != 0) {
             mLastPoint = mLastPoint.year().setCopy(yearLastSave);
             mLastPoint = mLastPoint.dayOfYear().setCopy(dayLastSave);
         }
+
+        Log.i("TRANSFERT", " INIT : LastPoint : " + mLastPoint.getDayOfYear() + " (" + mLastPoint.getYear() + ") - TODAY : " +
+        mToday.getDayOfYear() + " (" + mToday.getYear() + ")");
+
 
     }
 
@@ -43,6 +43,7 @@ public class Clock {
 
         else {
             result = mToday.getDayOfYear() - mLastPoint.getDayOfYear();
+            if (result<0) result =0;
         }
 
         return result;
@@ -52,20 +53,13 @@ public class Clock {
 
     public int getThisDay(){return mToday.getDayOfYear();}
 
-    public int getSaveYear(){
-        return mLastPoint.getYear();
-    }
-
-    public int getSaveDay(){
-        return mLastPoint.getDayOfYear();
-    }
-
-
     public Boolean dateChange(){
         boolean result = false;
 
         if (mToday.getYear() != mLastPoint.getYear() || mToday.getDayOfYear() != mLastPoint.getDayOfYear())
             result = true;
+
+        Log.i("TRANSFERT", " BOOL DATE CHANGE : " + result);
 
         return result;
     }

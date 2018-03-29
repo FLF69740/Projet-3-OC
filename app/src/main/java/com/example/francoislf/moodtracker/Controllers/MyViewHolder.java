@@ -57,7 +57,21 @@ public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClic
 
         String call = mStick.getTextToast();
 
+        /** We will define a custom Toast in two step :
+         * First we declare the object Toast toast and we attach with this one : the View toastView
+         * Second we customize the TextView toastMessage. This one will be attached to the toastView
+         */
 
+        Toast toast = Toast.makeText(itemView.getContext(), call, Toast.LENGTH_SHORT);
+        View toastView = toast.getView(); // This'll return the default View of the Toast.
+
+        /* And now you can get the TextView of the default View of the Toast. */
+        TextView toastMessage = (TextView) toastView.findViewById(android.R.id.message);
+        toastMessage.setTextSize(16);
+        toastMessage.setTextColor(Color.WHITE);
+        toastMessage.setCompoundDrawablePadding(16);
+        toastView.setBackgroundColor(Color.DKGRAY);
+        toast.show();
 
     }
 }
