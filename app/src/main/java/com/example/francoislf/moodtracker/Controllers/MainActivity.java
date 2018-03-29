@@ -3,6 +3,7 @@ package com.example.francoislf.moodtracker.Controllers;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,13 +22,13 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MainFragment.OnButtonClickedListener{
 
-    SharedPreferences mPreferences, mDialogPreferences, mLastPosPreferences, mJSonPreferences;
+    private SharedPreferences mPreferences, mDialogPreferences, mLastPosPreferences, mJSonPreferences;
 
-    int mPosition;
-    boolean mDialogOpen;
+    private int mPosition;
+    private boolean mDialogOpen;
 
-    Clock mClock;
-    StickDiagram mStickDiagram;
+    private Clock mClock;
+    private StickDiagram mStickDiagram;
 
     public static final String LAST_POSITION = "LAST_POSITION";
     public static final String COMMENTARY_OF_THE_DAY = "COMMENTARY_OF_THE_DAY";
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
     public static final String LAST_SAVE_OF_YEAR = "yearLastSave";
     public static final String LAST_SAVE_OF_DAY = "dayLastSave";
     public static final String SHARED_DEFAULT_STICK_SCALE = "SHARED_DEFAULT_STICK_SCALE";
+
+    private MediaPlayer mPlayer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
         clockInit(getPreferences(MODE_PRIVATE).getInt(LAST_POSITION,3));
 
         this.configureViewPager();
-
     }
 
     // Configure ViewPager
@@ -65,20 +67,19 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
         ViewPager viewPager = (ViewPager) findViewById(R.id.activity_main_viewpager);
         viewPager.setAdapter(new PageAdapter(getSupportFragmentManager(), getResources().getIntArray(R.array.ColorPageFragment)));
 
-        // Load the page registered in mPreferences (or page happy by default)
+        // Load the page registered in mPreferences
         viewPager.setCurrentItem(getPreferences(MODE_PRIVATE).getInt(LAST_POSITION,3));
 
         // Attach the page change listener inside the activity
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
             // This method will be invoked when the current page is scrolled
             @Override
             public void onPageSelected(int position) {
                 mLastPosPreferences.edit().putInt(LAST_POSITION, position).apply();
+                playSound(getPreferences(MODE_PRIVATE).getInt(LAST_POSITION,4));
 
                 // Delete a commentary before if mood change
                 if (getPreferences(MODE_PRIVATE).getString(COMMENTARY_OF_THE_DAY, null) != null && mPosition != position)
@@ -87,12 +88,8 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
+            public void onPageScrollStateChanged(int state) {}
         });
-
-
     }
 
     @Override
@@ -152,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
     // Initialisation of Sticks state with the current clock
     private void clockInit(int mood){
         mClock = new Clock(getPreferences(MODE_PRIVATE).getInt(LAST_SAVE_OF_YEAR, 0), getPreferences(MODE_PRIVATE).getInt(LAST_SAVE_OF_DAY, 0));
-
         mStickDiagram = new StickDiagram(mClock.getPeriod(), mood, getPreferences(MODE_PRIVATE).getString(COMMENTARY_OF_THE_DAY, null));
 
         load();
@@ -161,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
             mStickDiagram.upLoad();
 
             mDialogPreferences.edit().putString(COMMENTARY_OF_THE_DAY, null).apply();
+            mLastPosPreferences.edit().putInt(LAST_POSITION, 3).apply();
         }
         save();
     }
@@ -192,7 +189,33 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
         editor.putString(SHARED_DEFAULT_STICK_SCALE, json);
       //      editor.putString(SHARED_DEFAULT_STICK_SCALE, null);
         editor.apply();
+        if (getPreferences(MODE_PRIVATE).getString(SHARED_DEFAULT_STICK_SCALE,null) == null) load();
 
         Log.i("TRANSFERT","SAVE MODE to " + getClass().getName().toString());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mPlayer != null){
+            mPlayer.stop();
+            mPlayer.release();
+        }
+    }
+
+    // Method for playing sounds
+    private void playSound(int mood){
+        if (mPlayer != null){
+            mPlayer.stop();
+            mPlayer.release();
+        }
+        switch (mood){
+            case 0: mPlayer=MediaPlayer.create(this,R.raw.mood1); mPlayer.start();break;
+            case 1: mPlayer=MediaPlayer.create(this,R.raw.mood2); mPlayer.start();break;
+            case 2: mPlayer=MediaPlayer.create(this,R.raw.mood3); mPlayer.start();break;
+            case 3: mPlayer=MediaPlayer.create(this,R.raw.mood4); mPlayer.start();break;
+            case 4: mPlayer=MediaPlayer.create(this,R.raw.mood5); mPlayer.start();break;
+            default:break;
+        }
     }
 }
