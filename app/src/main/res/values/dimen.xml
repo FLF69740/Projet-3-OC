@@ -9,4 +9,9 @@
     <dimen name="size_ic_history_width">50dp</dimen>
     <dimen name="size_ic_history_height">44dp</dimen>
 
+    <dimen name="size_ic_comment_width">23dp</dimen>
+    <dimen name="size_ic_comment_height">@dimen/size_ic_comment_width</dimen>
+
+    <dimen name="text_size_HA">16sp</dimen>
+
 </resources>
