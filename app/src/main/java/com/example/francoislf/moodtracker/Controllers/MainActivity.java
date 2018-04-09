@@ -30,13 +30,13 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnBu
     private Clock mClock;
     private StickDiagram mStickDiagram;
 
-    public static final String LAST_POSITION = "LAST_POSITION";
-    public static final String COMMENTARY_OF_THE_DAY = "COMMENTARY_OF_THE_DAY";
-    public static final String BUNDLE_STATE_OUTSTATE = "Outstate";
-    public static final String BUNDLE_STATE_DIALOG = "Dialog";
-    public static final String LAST_SAVE_OF_YEAR = "yearLastSave";
-    public static final String LAST_SAVE_OF_DAY = "dayLastSave";
-    public static final String SHARED_DEFAULT_STICK_SCALE = "SHARED_DEFAULT_STICK_SCALE";
+    private static final String LAST_POSITION = "LAST_POSITION";
+    private static final String COMMENTARY_OF_THE_DAY = "COMMENTARY_OF_THE_DAY";
+    private static final String BUNDLE_STATE_OUTSTATE = "Outstate";
+    private static final String BUNDLE_STATE_DIALOG = "Dialog";
+    private static final String LAST_SAVE_OF_YEAR = "yearLastSave";
+    private static final String LAST_SAVE_OF_DAY = "dayLastSave";
+    private static final String SHARED_DEFAULT_STICK_SCALE = "SHARED_DEFAULT_STICK_SCALE";
 
     private MediaPlayer mPlayer = null;
 
